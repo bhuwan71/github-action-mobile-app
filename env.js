@@ -36,8 +36,8 @@ require('dotenv').config({
 const BUNDLE_ID = 'com.sarallagani'; // ios bundle id
 const PACKAGE = 'com.sarallagani'; // Updated android package name
 const NAME = 'sarallagani'; // app name
-const EXPO_ACCOUNT_OWNER = 'expo-owner'; // expo account owner
-const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'; // eas project id
+const EXPO_ACCOUNT_OWNER = 'saral-lagani-dev'; // expo account owner
+const EAS_PROJECT_ID = '053dd64c-e5de-4cbe-92a6-e15144ababca'; // eas project id
 const SCHEME = 'sarallagani'; // app scheme
 
 /**

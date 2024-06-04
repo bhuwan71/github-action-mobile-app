@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/ui';
+import React from 'react';
 
 export default function Page() {
   const router = useRouter();
