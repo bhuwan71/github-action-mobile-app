@@ -1,53 +1,40 @@
-name: Build and Deploy Android
+name: Deploy to Firebase
+
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        type: string
+        required: true
+        default: 'Manual Debug Build'
+        description: 'Release Notes'
 
 jobs:
   build:
+    name: Building and distributing app
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Install Java
-        uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'adopt'
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm install --force
-      - name: Bundle the app
-        run: npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
-      - name: Set Gradlew Permissions
-        run: chmod +x android/gradlew
-      - name: Running Tests
-        run: npm test
-      - name: Build application
-        run: |
-          cd ./android
-          ./gradlew assemble
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Build
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Upload artifact to Firebase App Distribution
-        id: testing_outputs
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Execute Gradle command - assembleDebug
+        run: ./gradlew assembleDebug
+
+      - name: Upload Artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{secrets.CREDENTIAL_FILE_CONTENT}}
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Print all outputs of the previous step
-        run: |
-          echo ${{steps.testing_outputs.outputs.FIREBASE_CONSOLE_URI}}
-          echo ${{steps.testing_outputs.outputs.TESTING_URI}}
-          echo ${{steps.testing_outputs.outputs.BINARY_DOWNLOAD_URI}}
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: ${{ inputs.release_notes }}

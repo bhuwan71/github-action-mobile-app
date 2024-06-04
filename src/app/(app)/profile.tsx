@@ -37,16 +37,16 @@ const Profile = () => {
       <FocusAwareStatusBar />
       <ScrollView>
         <View className="flex-1 px-4 pt-16 ">
-          <Text className="text-red-800">Profile</Text>
+          <Text className="text-red-800">Profile name should be app</Text>
           <View>
-            <Button label="Show Modal" onPress={showModal} />
-            <Modal
+            {/* <Button label="Show Modal" onPress={showModal} /> */}
+            {/* <Modal
               snapPoints={['60%']} // optional
               title="Modal Title"
               ref={ref}
             >
               <Text>{JSON.stringify(data)}</Text>
-            </Modal>
+            </Modal> */}
           </View>
         </View>
       </ScrollView>
